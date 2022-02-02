@@ -29,8 +29,11 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{\Abin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  # Uncomment to register a new dependency of your gem
-  # spec.add_dependency "example-gem", "~> 1.0"
+  spec.add_dependency "numo-linalg", ">= 0.1.5"
+  spec.add_dependency "numo-narray", ">= 0.9.1.9"
+  spec.add_dependency "pp", ">= 0.1.0"
+  spec.add_dependency "pycall", ">= 1.3.1"
+  spec.add_dependency "npy", ">= 0.2.0"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html

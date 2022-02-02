@@ -2,6 +2,7 @@ require 'nmatrix'
 require 'nmatrix/lapacke'
 require 'cmath'
 require 'time'
+require 'npy'
 #require 'pp'
 
 class NMatrix

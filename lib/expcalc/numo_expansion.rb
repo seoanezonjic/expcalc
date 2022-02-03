@@ -41,7 +41,7 @@ class Hash
 	end
 
 
-	# TODO: Only works if the resultin matrix will be squared. Replace implementacion taking into account to_bmatrix and its output
+	# TODO: Only works if the resulting matrix will be squared. Replace implementacion taking into account to_bmatrix and its output
 	def to_wmatrix
 	  element_names = self.keys
 	  matrix = Numo::DFloat.zeros(element_names.length, element_names.length)
@@ -65,8 +65,32 @@ end
 
 module Numo
 	class NArray
-		def save(matrix_filename, x_axis_names, x_axis_file, y_axis_names=nil, y_axis_file=nil)
-		  File.open(x_axis_file, 'w'){|f| f.print x_axis_names.join("\n") }
+		# TODO: load and save must have exact coherence between load ouput and save input
+		# Take into acount https://github.com/ankane/npy to load and read mats it allows serialize matrices larger than ruby marshal format
+
+		def self.load(input_file, type='txt', splitChar="\t")
+			matrix = nil
+			if type == 'txt' 
+				counter = 0
+				File.open(input_file).each do |line|
+			    	line.chomp!
+		    		row = line.split(splitChar).map{|c| c.to_f }
+		    		if matrix.nil?
+		    			matrix = Numo::DFloat.zeros(row.length, row.length)
+		    		end
+		    		row.each_with_index do |val, i|
+		    			matrix[counter, i] = val if val != 0
+		    		end
+		    		counter += 1
+				end
+			elsif type == 'npy'
+				matrix = Npy.load(input_file)
+			end
+			return matrix
+		end
+
+		def save(matrix_filename, x_axis_names=nil, x_axis_file=nil, y_axis_names=nil, y_axis_file=nil)
+		  File.open(x_axis_file, 'w'){|f| f.print x_axis_names.join("\n") } if !x_axis_names.nil?
 		  File.open(y_axis_file, 'w'){|f| f.print y_axis_names.join("\n") } if !y_axis_names.nil?
 		  Npy.save(matrix_filename, self)
 		end

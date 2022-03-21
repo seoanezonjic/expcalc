@@ -36,6 +36,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency "pycall", ">= 1.3.1"
   spec.add_dependency "npy", ">= 0.2.0"
 
+  spec.add_development_dependency "rake"
+  spec.add_development_dependency "rspec"
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
 end

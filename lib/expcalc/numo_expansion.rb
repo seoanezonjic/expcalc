@@ -13,8 +13,9 @@ class Hash
 	  x_names_indx = {}
 	  i = 0
 	  self.each do |k, values|
-	    values.each do |val_id|
-	      query = x_names_indx[val_id]
+	    values.each do |val_id|   	
+    	  val_id = val_id.first if val_id.class == Array
+      	  query = x_names_indx[val_id]
 	      if query.nil?
 	        x_names_indx[val_id] = i
 	        i += 1
@@ -41,25 +42,54 @@ class Hash
 	end
 
 
-	# TODO: Only works if the resulting matrix will be squared. Replace implementacion taking into account to_bmatrix and its output
-	def to_wmatrix
-	  element_names = self.keys
-	  matrix = Numo::DFloat.zeros(element_names.length, element_names.length)
-	  i = 0
-	  self.each do |elementA, relations|
-	    element_names.each_with_index do |elementB, j|
-	      if elementA != elementB
-	        query = relations[elementB]
-	        if !query.nil?
-	          matrix[i, j] = query
-	        else
-	          matrix[i, j] = self[elementB][elementA]
-	        end
-	      end
-	    end
-	    i += 1
-	  end
-	  return matrix, element_names
+	def to_wmatrix(squared: true, symm: true)
+		if squared
+			matrix, element_names = to_wmatrix_squared(symm: symm)
+			return matrix, element_names
+		else
+			matrix, y_names, x_names = to_wmatrix_rectangular(symm: symm)
+			return matrix, y_names, x_names
+		end
+	end
+
+	def to_wmatrix_squared(symm: true)
+		  element_names = self.keys
+		  matrix = Numo::DFloat.zeros(element_names.length, element_names.length)
+		  i = 0
+		  self.each do |elementA, relations|
+		    element_names.each_with_index do |elementB, j|
+		      if elementA != elementB
+		        query = relations[elementB]
+		        if !query.nil?
+		          matrix[i, j] = query
+		        elsif symm
+		          matrix[i, j] = self[elementB][elementA]
+		        end
+		      end
+		    end
+		    i += 1
+		  end
+		  return matrix, element_names
+	end
+
+	def to_wmatrix_rectangular(symm: true)
+		  y_names = self.keys
+		  x_names = self.get_hash_values_idx.keys
+		  matrix = Numo::DFloat.zeros(y_names.length, x_names.length)
+		  i = 0
+		  self.each do |elementA, relations|
+		    x_names.each_with_index do |elementB, j|
+		        query = relations[elementB]
+		        if !query.nil?
+		          matrix[i, j] = query
+		        elsif symm
+		        	query = self.dig(elementB, elementA)
+		        	matrix[i, j] = query if !query.nil?
+		        end
+		    end
+		    i += 1
+		  end
+		  return matrix, y_names, x_names
 	end
 end
 

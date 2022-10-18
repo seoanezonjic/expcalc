@@ -1,5 +1,5 @@
 #require 'nmatrix'
-#require 'nmatrix/lapacke'
+#require 'nmatrix/lapacke
 require 'numo/narray'
 require 'numo/linalg'
 require 'cmath'
@@ -25,8 +25,8 @@ class Hash
 	  return x_names_indx
 	end
 
-	def to_bmatrix 
-	  x_names_indx = self.get_hash_values_idx
+	def to_bmatrix
+	  x_names_indx = self.get_hash_values_idx 
 	  y_names = self.keys
 	  x_names = x_names_indx.keys
 	   # row (y), cols (x)
@@ -75,6 +75,7 @@ class Hash
 	def to_wmatrix_rectangular(symm: true)
 		  y_names = self.keys
 		  x_names = self.get_hash_values_idx.keys
+		  p x_names
 		  matrix = Numo::DFloat.zeros(y_names.length, x_names.length)
 		  i = 0
 		  self.each do |elementA, relations|
@@ -125,6 +126,89 @@ module Numo
 		  Npy.save(matrix_filename, self)
 		end
 
+		def bmatrix_squared_to_hash(elements_names)
+			hash = {}
+			elements_names.each_with_index do |x_name, x_pos|
+				elements_names.each_with_index do |y_name, y_pos|
+					associationValue = self[x_pos, y_pos]
+					if associationValue > 0
+						query = hash[x_name]
+						if query.nil?
+							hash[x_name] = [y_name]
+						else
+							hash[x_name] << y_name
+						end
+					end
+				end
+			end
+			return hash
+		end
+
+		def bmatrix_rectangular_to_hash(x_names, y_names)
+			hash = {}
+			x_names.each_with_index do |x_name, x_pos|
+				y_names.each_with_index do |y_name, y_pos|
+					associationValue = self[x_pos, y_pos]
+					if associationValue > 0
+						query = hash[x_name]
+						if query.nil?
+							hash[x_name] = [y_name]
+						else
+							hash[x_name] << y_name
+						end
+						query = hash[y_name]
+						if query.nil?
+							hash[y_name] = [x_name]
+						else
+							hash[y_name] << x_name
+						end
+					end
+				end
+			end
+			return hash
+		end
+
+		def wmatrix_squared_to_hash(layers)
+			hash = {}
+			layers.each_with_index do |x_name, x_pos|
+				layers.each_with_index do |y_name, y_pos|
+					associationValue = self[x_pos, y_pos]
+					if associationValue > 0
+						query = hash[x_name]
+						if query.nil?
+							hash[x_name] = {y_name => associationValue}
+						else
+							hash[x_name][y_name] = associationValue
+						end
+					end
+				end
+			end
+			return hash
+		end
+
+		def wmatrix_rectangular_to_hash(x_names, y_names)
+			hash = {}
+			x_names.each_with_index do |x_name, x_pos|
+				y_names.each_with_index do |y_name, y_pos|
+					associationValue = self[x_pos, y_pos].to_f
+					if associationValue > 0
+						query = hash[x_name]
+						if query.nil?
+							hash[x_name] = {y_name => associationValue}
+						else
+							hash[x_name][y_name] = associationValue
+						end
+						query = hash[y_name]
+						if query.nil?
+							hash[y_name] = {x_name => associationValue}
+						else
+							hash[y_name][x_name] = associationValue
+						end
+					end
+				end
+			end
+			return hash
+		end
 
 		def div(second_mat) #Matrix division A/B => A.dot(B.pinv) #https://stackoverflow.com/questions/49225693/matlab-matrix-division-into-python
 			return self.dot(second_mat.pinv)

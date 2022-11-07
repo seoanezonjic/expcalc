@@ -33,12 +33,6 @@ class NumoTest < Minitest::Test
 		assert_equal(@wmatrix_squared, test_wmatrix_squared.first)
 	end
 
-	def test_to_wmatrix_rectangular
-		test_wmatrix_rectangular = @whash_rectangular.to_wmatrix(squared: false, symm: false)
-		assert_equal(@wmatrix_rectangular, test_wmatrix_rectangular.first)
-	end
-
-
 	# MATRIX TO HASH
 
 	def test_bmatrix_squared_to_hash

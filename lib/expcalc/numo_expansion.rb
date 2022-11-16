@@ -370,9 +370,8 @@ module Numo
 		end 
 
 		def cosine_normalization
-			normalized_matrix =  NMatrix.zeros(self.shape, dtype: self.dtype)
-			#normalized_matrix =  NMatrix.zeros(self.shape, dtype: :complex64)
-			self.each_with_indices do |val, i, j|
+			normalized_matrix =  Numo::DFloat.zeros(self.shape) 
+			self.each_with_index do |val, i, j|
 				norm = val/CMath.sqrt(self[i, i] * self[j,j])
 				#abort("#{norm} has non zero imaginary part" ) if norm.imag != 0
 				normalized_matrix[i, j] = norm#.real

@@ -9,16 +9,21 @@ class Array
 		variance = self.inject(0){|sum, n | sum + (n - x_mean)**2 }.fdiv(self.length)
 		return Math.sqrt(variance)
 	end
+	
+	def get_quantiles(position=0.5, increasing_sort= false)
+      self.sort!
+      self.reverse! if !increasing_sort
+      quantile_value = nil
 
-	def get_quantiles(position=0.5)
-	  self.sort!
-	  n_items = self.size
-	  quantile_coor = n_items * position - 1
-	  if n_items % 2 == 0
-	    quantile_value = (self[quantile_coor.to_i] + self[quantile_coor.to_i + 1]).fdiv(2)   
-	  else
-	    quantile_value = self[quantile_coor.ceil]
-	  end
-	  return quantile_value
-	end
+      n_items = self.size
+      quantile_coor = (n_items - 1) * position
+      f_qcoor = quantile_coor.floor
+      c_qcoor = quantile_coor.ceil
+      if f_qcoor == c_qcoor
+        quantile_value = array[f_qcoor.to_i]
+      else
+        quantile_value = (array[f_qcoor.to_i] + array[c_qcoor.to_i]).fdiv(2)
+      end
+      return quantile_value
+    end
 end

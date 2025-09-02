@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["seoanezonjic@hotmail.com"]
 
   spec.summary       = "Gem to expand ruby math capabilities"
-  spec.description   = "To expand ruby math operations this gem call to others such as Numo:narray and others and implements methods onto them to deal with our needs"
+  spec.description   = "DEPRECATED PROJECT. MIGRATED TO PYTHON: https://github.com/seoanezonjic/py_exp_calc.\nTo expand ruby math operations this gem call to others such as Numo:narray and others and implements methods onto them to deal with our needs"
   spec.homepage      = "https://github.com/seoanezonjic/expcalc"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.4.0")
